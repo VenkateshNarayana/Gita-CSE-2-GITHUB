@@ -3,6 +3,7 @@
 -Delete - delete_at_end,delete_at_index
 -Modify - modify_at_index
 -Traverse - linear traversal
+Adding to GITHUB so that all code is synched up there
 */
 #include<stdio.h>
 #define MAX 5
