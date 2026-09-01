@@ -15,11 +15,12 @@ step4: store the r,c,v of every non zero elements from original matrix
 
 */
 #include<stdio.h>
-void display_matrix(int mat[][5],int ,int );
-void display_triplet(int mat[][3],int ,int );
-void display_matrix_using_triplet(int mat[][3],int ,int );
-void convert_sparse_to_triplet(int[][5],int[][3]);
-int get_matrix_element(int mat[][3],int i,int j);
+void display_matrix(int mat[][5],int ,int );            //param1 = orignal matrix, param2= orig mat row,param3 = orig mat col
+void display_triplet(int mat[][3],int ,int );           //param1 = triplet matrix, param2= triplet row, param3= triplet col
+void convert_sparse_to_triplet(int[][5],int[][3]);      //param1=original matrix;param2=triplet matrix
+
+void display_matrix_using_triplet(int mat[][3]);        //param1 = triplet matrix
+int get_element_from_triplet(int mat[][3],int i,int j); //param1 = triplet matrix;param2 = i(row val of non zero element);param3= j(col val of non zero element)
 int main(){
 	int mat_sparse[4][5]={ {0,0,3,0,4 },
 				          {0,0,5,7,0 },
@@ -57,8 +58,24 @@ int main(){
 	display_triplet(triplet_rep,non_zeros_count+1,3);
 	
 	//now display the matrix using triplet form
-	display_matrix_using_triplet(triplet_rep,non_zeros_count+1,3);
+	display_matrix_using_triplet(triplet_rep);
 	
+	//transpose triplet
+	int trip_trans_rows = triplet_rep[0][2]+1;//header row ->non zero count + 1 (for header)
+	int triplet_trans[trip_trans_rows][3];
+	for(int row = 0;row<trip_trans_rows;row++){
+		//insert the r,c,v ; r = triplet c, c = triplet r, v = triplet v
+		triplet_trans[row][0]= triplet_rep[row][1];//r = triplet col values
+		triplet_trans[row][1]= triplet_rep[row][0];//c = triplet row values
+		triplet_trans[row][2]= triplet_rep[row][2];//v = triplet values(actual elements)
+	}
+	
+	//display the transposed triplet matrix
+	display_triplet(triplet_trans,trip_trans_rows,3);
+	
+	//now display the matrix using triplet form
+	display_matrix_using_triplet(triplet_trans);
+		
 	return 0;
 }
 void convert_sparse_to_triplet(int mat_sparse[][5],int triplet_rep[][3]){
@@ -94,25 +111,30 @@ void display_triplet(int mat[][3],int row,int col){
 		printf("\n");
 	}
 }
-int get_matrix_element(int triplet_form[][3],int i_row,int j_col){
-	int element=0;
-	int row = triplet_form[0][2] + 1; //From the header get the value which is the non zero count add 1 for the header
-	for (int i=1;i<row;i++){
-		if(triplet_form[i][0]==i_row && triplet_form[i][1]==j_col){
-			element = triplet_form[i][2];
-			return element;
+int get_element_from_triplet(int triplet_mat[][3],int i,int j){
+	//fetch the rows of triplet matrix from header row (no of non zero elements stored in 3 col)
+	int trip_rows = triplet_mat[0][2] +1 ;//non zero count + 1 (header row)
+	for(int row=1;row<trip_rows;row++){
+		if(triplet_mat[row][0]==i && triplet_mat[row][1]==j){ //if row and col values are same then return the value
+			return triplet_mat[row][2];//return the value
 		}
 	}
-	return element;
+	return 0;//if no match found 
 }
-void display_matrix_using_triplet(int triplet[][3],int trip_row,int trip_col){
+void display_matrix_using_triplet(int triplet_mat[][3]){
+	//fetch the original dimension from header row
+	int rows = triplet_mat[0][0]; //rows
+	int cols = triplet_mat[0][1]; //cols
+	printf("\n Matrix:\n");
+	//print the matrix using nested loops for i and j
+	for(int i=0;i<rows;i++){
+		for(int j=0;j<cols;j++){
+			printf("%d ",get_element_from_triplet(triplet_mat,i,j));
+		}
+		printf("\n"); //print a new line for each row
+	}
 	
-	printf("\nMatrix Using Triplet form:\n");
-	int mat_rows = triplet[0][0],mat_cols=triplet[0][1];
-	for (int i=0;i<mat_rows;i++){
-		for(int j=0;j<mat_cols;j++){
-			printf("%d ",get_matrix_element(triplet,i,j));
-		}
-		printf("\n");
-	}
 }
+
+
+
