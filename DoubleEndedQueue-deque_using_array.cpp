@@ -1,151 +1,166 @@
-/*DeQue(double ended queue) - Principle used for data management is FIFO- first in first out
-  Operations - 1.add_first    - insertion at the front(head) using front index
-  			   2.add_last     - insertion at the rear(tail) using rear index
-			   3.remove_first - deletion at the front(head) using front index
-  			   4.remove_last  - deletion at the rear(tail) using front index
-			   5.peek_front - get the first element
-  			   6.peek_rear  - get the last element
-  			   7.is_full    - checks if rear has reached its max_size or not
-  			   8.is_empty   - checks if Q is empty or not
-  			   9.traverse   - display all the elements in the Q from head till tail,display the size also
-  			   
+/*Deque(Double Ended Queue) - It is  LDS where data management is managed using flexible insertion and deletion(both ends)
+  Operations - 1.add_first    - add the element in the front(right shifting)
+  			   2.add_last     - add the element in the rear	
+  			   3.remove_first - delete the element from the front(left shifting)
+               3.remove_last  - delete the element from the rear
+               3.peek_front   - get the first element of the Q
+               4.peek_rear    - get the last element of the Q
+               5.is_empty     - return 1 front==-1 else 0
+               6.is_full      - return 1 when rear reaches MAX_SIZE -1 of the  Q
+               7.traverse     - display the Q elements from front(head) to rear(tail). display the current size(rear+1 - front)
+         
 */
-#include <stdio.h>
+#include<stdio.h>
 #define MAX_SIZE 5
-int front = -1; //you have to initialize this to -1
-int rear  = -1; //you have to initialize this to -1
-//enque
-void add_first(int[],int); //param1= array name ;param2 = value
-void add_last(int[],int); //param1= array name ;param2 = value
-//deque
-int  remove_first(int[]);     //param1= array name 
-int  remove_last(int[]);     //param1= array name 
-//traversing
-void traverse(int[]);    //param1= array name
-//peek
-int peek_front(int[]);   //param1= array name
-int peek_rear(int[]);    //param1= array name
-//check overflow and undeflow
-int is_full();           //return 1 if rear reaches MAX_SIZE-1 else 0 
-int is_empty();          //return 1 if front>rear else 0 
+int front = -1; //this is for tracking insertion from front
+int rear  = -1; //this is for tracking insertion from rear
+//dequeue
+int remove_first(int[]);      //param1=arrayname 
+int remove_last(int[]);      //param1=arrayname 
 
+//enqueue
+void add_first(int[],int); //param1=arrayname ;param2=value
+void add_last(int[],int); //param1=arrayname ;param2=value
+//traverse
+void traverse(int[]);    //param1=arrayname 
+
+//overflow and underflow check
+int is_full();           //return 1 when rear reaches MAX_SIZE -1 of the  Q  
+int is_empty();          //return 1 when front>rear else 0
+
+//peek operations
+int peek_front(int[]);   //param1=arrayname ; return the first element of the Q
+int peek_rear(int[]);    //param1=arrayname ; return the last element of the Q
 
 int main(){
-	int queue[MAX_SIZE]={0}; //declare with MAX_SIZE & initialize Q to zero.
-	//enque operations
-	add_first(queue,10); //insert at front
+	int queue[MAX_SIZE]={0};//declare and initialize the Q with zero
+	
+	//enqueue
+	add_first(queue,10);
 	traverse(queue);
-	add_first(queue,20); //insert at front
+	add_first(queue,20);
 	traverse(queue);
-	add_last(queue,30);  //insert at rear
+	add_first(queue,30);
 	traverse(queue);
-	add_last(queue,40);  //insert at rear
+	add_last(queue,40);
 	traverse(queue);
-	add_last(queue,50);  //insert at rear
-	traverse(queue);
-	add_last(queue,60); //rear goes out of bound index - will this work? NO-becuase Q Overflow
+	add_last(queue,50);
 	traverse(queue);
 	
-	//peek operations
+	add_last(queue,60); //will this be added to Q?NO-becuase the Q is FULL
+	traverse(queue);
+	//peek front and rear
 	printf("\nWho is in the front? %d",peek_front(queue));
-	printf("\nWhat is in the tail? %d",peek_rear(queue));
-	
-	//perform dequeue
-	int dq_elt = remove_first(queue); //remove element from head(front)
-	printf("%s",dq_elt==-1?"":"\nDequeued from front successfully\n");
+	printf("\nWho is in the back? %d",peek_rear(queue));
+
+	//	dequeue - from first
+	printf("%s",(remove_first(queue)==-1)?"....":"\nPerformed dequeue from front(head) sucessfully!!!");
+	//traversal
 	traverse(queue);
-	
-	//peek operations
 	printf("\nWho is in the front? %d",peek_front(queue));
-	printf("\nWhat is in the tail? %d",peek_rear(queue));
+	printf("\nWho is in the back? %d",peek_rear(queue));
 	
-	dq_elt = remove_last(queue); //remove element from tail(rear)
-	printf("%s",dq_elt==-1?"":"\nDequeued from rear successfully\n");
+	
+	//dequeue - from last
+	printf("%s",(remove_last(queue)==-1)?"....":"\nPerformed dequeued from rear(tail) sucessfully!!!");
+	//traversal
 	traverse(queue);
-	
-	//peek operations
 	printf("\nWho is in the front? %d",peek_front(queue));
-	printf("\nWhat is in the tail? %d",peek_rear(queue));
+	printf("\nWho is in the back? %d",peek_rear(queue));
 	
-	
-	return 0;
+	return 0;//for the main
 }
-int is_full(){           //return 1 if rear reaches MAX_SIZE-1 else 0 
-	return(rear==MAX_SIZE-1);//overflow
-} 
-int is_empty(){         //return 1 if front>rear else 0 
-	return(front==-1); //underflow
+int is_empty(){         //return 1 when front==-1 else 0
+	return(front==-1); //return 1 else 0
 }
-void add_first(int q[],int value){ //param1= array name ;param2 = value
+int is_full(){           //return 1 when rear reaches MAX_SIZE -1 of the  Q	
+	return(rear==MAX_SIZE-1); //return 1 else 0
+}
+void add_first(int q[],int value){
+	//check for is overflow
 	if(is_full()){
-		printf("Q is FULL...cannot enqueue %d!!!\n",value);
-		return; //return so that value is not stored
+		printf("\nQ overflow...cannot perform enqueue of %d",value);
+		return; //do not proceed further
 	}
-	//when q is empty front and rear will be at -1
+	//check if its initial condition
+	if(front==-1){
+		front = 0;
+	}else{
+		//right shifting from right to left
+		for(int i=rear;i>=front;i--){
+			q[i+1] = q[i];
+		}	
+	}
+	//insert the value at index 0
+	q[front]=value; //inserted value at index 0
+	rear++;         //increment rear by 1
+}
+void add_last(int q[],int value){
+	//check for is overflow
+	if(is_full()){
+		printf("\nQ overflow...cannot perform enqueue of %d",value);
+		return; //do not proceed further
+	}
+	//check if its initial condition
 	if(front==-1){
 		front = 0;
 	}
-    //insert at front using right shifting
-    for(int i=rear;i >=front; i--){
-    	q[i+1] = q[i];//right shifting formula
-	}
-	q[front]=value; //always insert value at 0 index
-	rear++ ;        //rear will also move by 1
+	q[++rear]=value; //inserted value at index 0
 }
-void add_last(int q[],int value){ //param1= array name ;param2 = value
-	if(is_full()){
-		printf("Q is FULL...cannot enqueue %d!!!\n",value);
-		return; //return so that value is not stored
-	}
-	//when q is empty front and rear will be at -1
-	if(front==-1){
-		front = 0;
-	}
-	q[++rear] = value; //insert at rear(tail)
-}
-int  remove_first(int q[]){    //param1= array name
+
+int remove_first(int q[]){
+	//check for underflow
 	if(is_empty()){
-		printf("Q is EMPTY...cannot perform dequeue!!!\n");
-		return -1; //return -1 so that value is not stored
+		printf("\nQ underflow...cannot perform dequeue!!");
+		return -1;
 	}
-	int dq_item = q[front]; //first store the value at index 0 
-	//remove from front using left shifting
-	for(int i=front;i<rear; i++){
-    	q[i] = q[i+1];//left shifting formula
-	}
-	q[rear--]=0; //set the last index value to 0;
-	if (front==rear){
-		//reset the queue
+	int dq_item=q[front];//store front value 
+	//left shifting from left to right
+		for(int i=front;i<rear;i++){
+			q[i] = q[i+1];
+		}
+		q[rear] = 0;//make the last element 0
+	rear--; //decrement the rear index by 
+	if(front==rear){
+		//reset the Q
 		front = -1;
 		rear  = -1;
 	}
 	return dq_item;
 }
-int  remove_last(int q[]){    //param1= array name
+int remove_last(int q[]){
+	//check for underflow
 	if(is_empty()){
-		printf("Q is EMPTY...cannot perform dequeue!!!\n");
-		return -1; //return -1 so that value is not stored
+		printf("\nQ underflow...cannot perform dequeue!!");
+		return -1;
 	}
-	int dq_item = q[front]; //first store the value at index 0 
-	rear--; //decrement the rear index by 1;rear = rear - 1; --rear ; rear--;
-	if (front==rear){
-		//reset the queue
+	int dq_item=q[rear--];//store rear value
+	if(front==rear){
+		//reset the Q
 		front = -1;
 		rear  = -1;
 	}
 	return dq_item;
 }
-void traverse(int q[]){    //param1= array name
-	printf("Queue (Curr Size:%d): [",(rear+1 - front));
+int peek_front(int q[]){   //param1=arrayname ; return the first element of the Q
+	if(is_empty()){
+		return -1;
+	}
+	return q[front];
+}
+int peek_rear(int q[]){    //param1=arrayname ; return the last element of the Q
+	if(is_empty()){
+		return -1;
+	}
+	return q[rear];
+}
+
+void traverse(int q[]){
+	printf("Queue (CurrSize:%d): [",(rear+1-front));
 	for(int i=front;i<=rear;i++){
 		printf("%d ",q[i]);
 	}
 	printf("]\n");
 }
-int peek_front(int q[]){   //param1= array name
-	return q[front]; //return the first element
-}
-int peek_rear(int q[]){    //param1= array name
-	return q[rear]; //return the last element
-}
+
 
