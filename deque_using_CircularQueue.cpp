@@ -56,25 +56,25 @@ int main(){
 	enqueue_rear(queue,60);//will this work?YES because Q is circualar & we removed 1 item
 	traverse(queue);
 	
-//	dq_item = dequeue(queue);
-//	if (dq_item !=-1) printf("\nRemoved %d from the queue",dq_item);
-//	traverse(queue);
-//	
-//	dq_item = dequeue(queue);
-//	if (dq_item !=-1) printf("\nRemoved %d from the queue",dq_item);
-//	traverse(queue);
-//	
-//	dq_item = dequeue(queue);
-//	if (dq_item !=-1) printf("\nRemoved %d from the queue",dq_item);
-//	traverse(queue);
-//	
-//	dq_item = dequeue(queue);
-//	if (dq_item !=-1) printf("\nRemoved %d from the queue",dq_item);
-//	traverse(queue);
-//	
-//	dq_item = dequeue(queue); //will this work? NO , because the Q is empty
-//	if (dq_item !=-1) printf("\nRemoved %d from the queue",dq_item);
-//	traverse(queue);
+	dq_item = dequeue_rear(queue);
+	if (dq_item !=-1) printf("\nRemoved %d from the queue",dq_item);
+	traverse(queue);
+	
+	dq_item = dequeue_front(queue);
+	if (dq_item !=-1) printf("\nRemoved %d from the queue",dq_item);
+	traverse(queue);
+	
+	dq_item = dequeue_front(queue);
+	if (dq_item !=-1) printf("\nRemoved %d from the queue",dq_item);
+	traverse(queue);
+	
+	dq_item = dequeue_front(queue);
+	if (dq_item !=-1) printf("\nRemoved %d from the queue",dq_item);
+	traverse(queue);
+	
+	dq_item = dequeue_front(queue); //will this work? NO , because the Q is empty
+	if (dq_item !=-1) printf("\nRemoved %d from the queue",dq_item);
+	traverse(queue);
 	
 	return 0; //for main()
 }
@@ -111,7 +111,7 @@ int dequeue_front(int q[]){      //param1 = array name
 	}else{
 		dq_item = q[front];
 		front = (front + 1) % MAX_SIZE;
-		size--;
+		size--; //decrement the current size by 1
 	}
 	return dq_item;
 }
@@ -122,7 +122,7 @@ int dequeue_rear(int q[]){      //param1 = array name
 	}else{
 		int rear = (front + size - 1) % MAX_SIZE;
 		dq_item = q[rear];
-		size--;
+		size--; //decrement the current size by 1
 	}
 	return dq_item;
 }
