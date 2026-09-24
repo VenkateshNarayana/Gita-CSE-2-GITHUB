@@ -29,8 +29,8 @@ void delete_at_head();        //it will remove the current head and move the hea
 void delete_at_tail();        //it will remove the current tail and move the tail to previous node
 
 //traverse operation - traverse from head to tail
-void traverse_list();
-
+void traverse_list();   //traverse the list from head to tail
+void free_list();       //free the linked list if it is not empty using free() function
 int main(){
 	
 	//create the linked list using insert at head
@@ -53,6 +53,7 @@ int main(){
 	delete_at_tail();
 	traverse_list();
 	
+	free_list();
 	return 0; //return main
 	
 }
@@ -158,4 +159,16 @@ void traverse_list(){
 		temp = temp->next;
 	}
 	printf("null]");
+}
+void free_list(){
+	struct node* temp;
+	if (head==NULL){
+		return;
+	}
+	while(head!=NULL){
+		temp = head;        //store head in temp so that we can free it after it moves to next node
+		head = head->next;  //move head to next node
+		free(temp);         //free the temp
+	}
+	printf("\nfreed all the node of the list successfully");
 }
