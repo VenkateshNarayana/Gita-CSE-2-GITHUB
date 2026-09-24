@@ -1,14 +1,5 @@
-/* Single Linked List - It is a Linear data structure which stores the elements as nodes which is scattered in memory & connected
-						using pointers.
-   Anatomy of Node   -  A node consists of 2 parts(first part is data and second is reference variable(pointer) which can store 
-   						the address of another node
-						1.DATA field 
-						2.NEXT pointer
-  HOW do we create a node? - We will use user defined data type (struct) to create our nodes.
-  	struct node{
-	  int data;
-	  struct node* next;
-    }
+/* Application of Linked List
+   3.Evaluation of Polynomial Expressions
 */
 #include<stdio.h>
 #include<stdlib.h>
