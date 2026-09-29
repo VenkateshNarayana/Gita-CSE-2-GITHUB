@@ -26,8 +26,9 @@ struct node* tail=NULL; //track the last node
 
 struct node* create_node(int); //param1 = input data for storing the data(information part1)
 //insert operations - at head, at position, at tail
-void insert_at_head(int);     //param1 = input data for storing the data(information part1)
-void insert_at_tail(int);     //param1 = input data for storing the data(information part1)
+void insert_at_head(int);         //param1 = input data for storing the data(information part1)
+void insert_at_tail(int);         //param1 = input data for storing the data(information part1)
+void insert_at_position(int,int); //param1 =  node value ; param2= input value
 
 //delete operations - at head, at position, at tail
 void delete_at_head();        //it will remove the current head and move the head to next node
@@ -51,6 +52,12 @@ int main(){
 	insert_at_tail(50);
 	traverse_tail();
 	traverse_head();
+	
+	//insert at postion
+	insert_at_position(30,25); //insert before node 30 new node 25
+	traverse_tail();
+	traverse_head();
+	
 	
 	//perform delete at head
 	delete_at_head();
@@ -108,6 +115,38 @@ void insert_at_tail(int input_data){
 	}
 	printf("\nInserted %d at tail successfully",input_data);
 }
+void insert_at_position(int node_value,int input_data){
+	if(head==NULL){
+		printf("\nList is empty..could not find the position(%d)",node_value);
+	}else if(head->data==node_value){
+		insert_at_head(input_data);
+	}else{
+		//step1: traverse and search for the node_value
+		struct node* temp=head;
+		while(temp!=NULL){
+			if(temp->data == node_value) break;
+			temp = temp->next;
+		}
+		if(temp==NULL){
+			printf("\nCould not find position(%d) in the list",node_value);
+		}else{
+			//if node is found
+			//create the new node
+			struct node* new_node = create_node(input_data);
+			if(new_node==NULL) return; //memory allocation failed dont proceed
+			//step2: store address of temp in new node's next 
+			new_node->next = temp;
+			//step3: store address of temp's prev in new node's prev 
+			new_node->prev = temp->prev;
+			//step4: store temp->prev in prev_node and update temp->prev to new node
+			struct node* prev_node = temp->prev;
+			temp->prev = new_node;
+			//step5: store the new node address in prev_node's next
+			prev_node->next = new_node;
+			printf("\nInserted %d at position(%d) successfully",input_data,node_value);
+		}
+	}
+}
 void delete_at_head(){
 	//step0 : check if the linked is empty or not
 	if(head==NULL){
@@ -115,6 +154,7 @@ void delete_at_head(){
 		return;
 	}//check if there is only 1 node left
 	int deleted_node = head->data;
+	struct node* temp=NULL;
 	if(head==tail){
 		temp = head; //store the head/tail in a temp
 		tail = head = NULL; //make the list empty
@@ -169,7 +209,7 @@ void traverse_head(){
 		printf("%d->",temp->data);
 		temp = temp->next;
 	}
-	printf("null]");
+	printf("null]\n");
 }
 void traverse_tail(){
 	struct node* temp;
@@ -184,7 +224,7 @@ void traverse_tail(){
 		printf("%d->",temp->data);
 		temp = temp->prev;
 	}
-	printf("null]");
+	printf("null]\n");
 }
 void free_list(){
 	struct node* temp;
