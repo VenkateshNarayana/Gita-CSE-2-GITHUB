@@ -13,6 +13,7 @@ struct node* create_node(int,int); //param1 = data for storing the coefficient (
 //insert operations - at tail
 void insert_at_tail(struct node** head,struct node** tail, int,int);     //param1 = data for storing the coefficient (information part1),param2 = data for storing the exponent (information part1)
 void polynomial_addition(struct node* p_head,struct node* p_tail,struct node* q_head,struct node* q_tail);
+void polynomial_multiply(struct node* p_head,struct node* p_tail,struct node* q_head,struct node* q_tail);
 
 //traverse operation - traverse from head to tail
 void traverse_list(struct node* head);   //traverse the list from head to tail
@@ -21,23 +22,23 @@ int main(){
 	struct node* p_head=NULL; //track the first node polynomial p
 	struct node* p_tail=NULL; //track the last node polynomial p
 
-	//create the polynomial = 7X^2 + 7X + 7
-	insert_at_tail(&p_head,&p_tail,7,2);
-	insert_at_tail(&p_head,&p_tail,7,1);
-	insert_at_tail(&p_head,&p_tail,7,0);
+	//create the polynomial = 5X^2 + 3X + 2
+	insert_at_tail(&p_head,&p_tail,5,2);
+	insert_at_tail(&p_head,&p_tail,3,1);
+	insert_at_tail(&p_head,&p_tail,2,0);
 	traverse_list(p_head);
 	
 	struct node* q_head=NULL; //track the first node polynomial q
 	struct node* q_tail=NULL; //track the last node of polynomial q
 	
-	//create another polynomia q(x) = 5X^2 + 3X + 8
-	insert_at_tail(&q_head,&q_tail,5,2);
-	insert_at_tail(&q_head,&q_tail,3,1);
-	insert_at_tail(&q_head,&q_tail,8,0);
+	//create another polynomia q(x) = 2X + 5
+	insert_at_tail(&q_head,&q_tail,2,1);
+	insert_at_tail(&q_head,&q_tail,5,0);
 	traverse_list(q_head);
 	
 	//perform the polynomial addition
-	polynomial_addition(p_head,p_tail,q_head,q_tail);
+//	polynomial_addition(p_head,p_tail,q_head,q_tail);
+	polynomial_multiply(p_head,p_tail,q_head,q_tail);
 	
 	free_list(p_head);
 	free_list(q_head);
@@ -66,11 +67,22 @@ void insert_at_tail(struct node** head,struct node** tail, int coeff,int exp){
 		*tail = new_node;
 		*head = *tail; //because single node we will have our head and tail pointing to the same new node
 	}else{
-		
-		(*tail)->next = new_node; //point current tail to new node
-		*tail = new_node;          //move the tail to new node
+		//if the new node has the same exponenet then add the coeffient to existing term(node)
+		struct node* temp = *head;
+		while(temp!=NULL){//traverse from head to NULL to find if it has any node with same exponent
+			if(temp->exp==new_node->exp){
+				//add the coefficient
+				temp->coeff  = temp->coeff + new_node->coeff;
+				break;
+			}
+			temp = temp->next; //move to next node(term)
+		}
+		if (temp==NULL){//when the exponent is not found then add to tail
+			(*tail)->next = new_node; //point current tail to new node
+			*tail = new_node;         //move the tail to new node
+		}
 	}
-	printf("\nInserted term at tail successfully");
+	printf("\nInserted term(%d,%d) at tail successfully",coeff,exp);
 }
 void polynomial_addition(struct node* p_head,struct node* p_tail,struct node* q_head,struct node* q_tail){
 	struct node* res_head=NULL;
@@ -103,7 +115,28 @@ void polynomial_addition(struct node* p_head,struct node* p_tail,struct node* q_
 	traverse_list(res_head);
 	free_list(res_head);
 }
-
+void polynomial_multiply(struct node* p_head,struct node* p_tail,struct node* q_head,struct node* q_tail){
+	struct node* res_head=NULL;
+	struct node* res_tail=NULL;
+	struct node* temp1 = p_head;
+	struct node* temp2 = q_head;
+	
+	while(temp1!=NULL){
+		temp2 = q_head; //reset the temp2 to point to q(head)
+		while(temp2!=NULL){
+			//do the mulitplication of terms of p with all terms of q
+			int coeff = temp1->coeff * temp2->coeff;
+			int exp   = temp1->exp   + temp2->exp; //when base are same powers get added
+			insert_at_tail(&res_head,&res_tail,coeff,exp);
+			temp2=temp2->next; //move to next node of q
+		}
+		temp1= temp1->next;    //move to next node of p
+	}
+	
+	//display the result polynomial
+	traverse_list(res_head);
+	free_list(res_head);
+}
 void traverse_list(struct node* head){
 	struct node* temp;
 	
