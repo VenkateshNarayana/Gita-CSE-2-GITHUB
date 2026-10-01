@@ -44,15 +44,15 @@ int main(){
 	traverse_list();
 	insert_at_tail(50);
 	traverse_list();
-//	
-//	//perform delete at head
-//	delete_at_head();
-//	traverse_list();
-//	
-//	//perform delete at tail
-//	delete_at_tail();
-//	traverse_list();
-//	
+	
+	//perform delete at head
+	delete_at_head();
+	traverse_list();
+	
+	//perform delete at tail
+	delete_at_tail();
+	traverse_list();
+	
 	free_list();
 	return 0; //return main
 	
@@ -135,7 +135,7 @@ void delete_at_tail(){
 	temp = head;
 	do{
 		temp=temp->next;
-	}while(temp->next!=head);
+	}while(temp->next!=tail);
 	//node before tail
 //		printf("\nNode before tail=%d",temp->data);
 	
